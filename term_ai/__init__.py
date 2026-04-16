@@ -1,0 +1,1 @@
+# Termai package initialization
