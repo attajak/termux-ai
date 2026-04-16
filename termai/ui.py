@@ -2,7 +2,7 @@ from .constants import GREEN, CYAN, YELLOW, RESET
 
 def print_help():
     """Prints the help menu with available commands."""
-    print(f"\n{GREEN}Termai - A CLI AI Assistant{RESET}")
+    print(f"\n{GREEN}Termux-AI - A CLI AI Assistant{RESET}")
     print(f"A lightweight CLI tool for AI integration in your terminal.\n")
     
     print(f"{YELLOW}Usage:{RESET}")

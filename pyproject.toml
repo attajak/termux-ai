@@ -3,10 +3,10 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "term-ai"
+name = "termux-ai"
 version = "0.3.0"
 description = "A lightweight CLI tool for AI integration in your terminal."
-keywords = ["termai", "term-ai", "cli", "ai", "termux"]
+keywords = ["termai", "term-ai", "termux-ai", "cli", "ai", "termux", "gemini", "openai"]
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
@@ -19,10 +19,10 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/attajak/termai"
-"Bug Reports" = "https://github.com/attajak/termai/issues"
+"Homepage" = "https://github.com/attajak/termux-ai#readme"
+"Bug Reports" = "https://github.com/attajak/termux-ai/issues"
 "Funding" = "https://paypal.me/attajak"
-"Source" = "https://github.com/attajak/termai"
+"Source" = "https://github.com/attajak/termux-ai"
 
 [project.scripts]
-ai = "term_ai.cli:main"
+ai = "termai.cli:main"

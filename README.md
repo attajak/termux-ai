@@ -15,16 +15,14 @@ It brings the power of Large Language Models (LLMs) directly to your command lin
 You can install Termai directly using `pip` or `pipx`:
 ```bash
 # Using pip
-pip install term-ai
-
-# Using pipx (cleanest)
-pipx install term-ai
+pip install termux-ai
+# Using pipx (isolated environment)
+pipx install termux-ai
 ```
 This will make the `ai` command available globally.
 
 ### Method 2: Manual Setup (for Development)
 If you want to contribute or run Termai in a development environment:
-## 🔑 Setup
 ```bash
 git clone https://github.com/attajak/termux-ai.git
 cd termux-ai
@@ -32,10 +30,11 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 pip install -e .
-python -m term_ai --reinstall #or
-ai --reinstall
+or
+pip install -e git+https://github.com/attajak/termux-ai.git
 ```
 
+## 🔑 Setup
 On the very first run, Termai will ask for your Google Gemini API Key.
  * Get a free API key here: Google AI Studio
  * Run the command:
@@ -113,7 +112,7 @@ The configuration file looks like this:
     *   `system_instruction`: A different persona for ChatGPT.
     *   `temperature`: Controls randomness.
     *   `max_tokens`: The maximum number of tokens to generate.
-
+<!--
 ## 🛠 Development
 If you want to contribute or run Termai in a development environment:
 
@@ -135,7 +134,7 @@ If you want to contribute or run Termai in a development environment:
     pip install -e .
     # Now the 'ai' command will use your local development version.
     ```
-
+-->
 ## ❓ Help & Troubleshooting
 **Command List:**
 ```bash
@@ -166,9 +165,9 @@ ai --debug-config
 ## 🗑 Uninstallation
 ### If installed via pip/pipx:
 ```bash
-pip uninstall termai
+pip uninstall termux-ai
 # or
-pipx uninstall termai
+pipx uninstall termux-ai
 ```
 
 ## 📄 License
@@ -177,3 +176,10 @@ You are free to use, modify, and distribute this software. See the LICENSE file 
 <p align="center">
 Made with ❤️ for CLI enthusiasts
 </p>
+
+---
+
+<details>
+<summary>Source codes</summary>
+https://github.com/estiaksoyeb/termai.git
+</details>
