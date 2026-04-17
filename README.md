@@ -1,5 +1,8 @@
-## Termai
-Termai is a lightweight, zero-dependency CLI wrapper for Google's Gemini AI, built for Termux on Android and general Linux environments.
+# Termux-AI
+
+[![Release](https://github.com/attajak/termux-ai/actions/workflows/release.yml/badge.svg)](https://github.com/attajak/termux-ai/actions/workflows/release.yml)
+
+Termux-Ai is a lightweight, zero-dependency CLI wrapper for Google's Gemini AI, built for Termux on Android and general Linux environments.
 It brings the power of Large Language Models (LLMs) directly to your command line, following the Unix philosophy of piping and standard streams.
 
 ## ⚡ Features
@@ -12,7 +15,7 @@ It brings the power of Large Language Models (LLMs) directly to your command lin
 
 ## 📥 Installation
 ### Method 1: Global Install (Recommended)
-You can install Termai directly using `pip` or `pipx`:
+You can install Termux directly using `pip` or `pipx`:
 ```bash
 # Using pip
 pip install termux-ai

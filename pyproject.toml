@@ -22,6 +22,7 @@ dependencies = [
 "Homepage" = "https://github.com/attajak/termux-ai#readme"
 "Bug Reports" = "https://github.com/attajak/termux-ai/issues"
 "Funding" = "https://paypal.me/attajak"
+"Sponser" = "https://github.com/sponsors/attajak"
 "Source" = "https://github.com/attajak/termux-ai"
 
 [project.scripts]
