@@ -15,7 +15,7 @@ It brings the power of Large Language Models (LLMs) directly to your command lin
 
 ## 📥 Installation
 ### Method 1: Global Install (Recommended)
-You can install Termux directly using `pip` or `pipx`:
+You can install TermuxAI directly using `pip` or `pipx`:
 ```bash
 # Using pip
 pip install termux-ai
@@ -52,7 +52,7 @@ Ask anything directly from the terminal.
 ai "How do I untar a file in Linux?"
 
 2. Piping (The Power Move)
-Feed output from other commands into Termai.
+Feed output from other commands into Termux-AI.
 Debug an error log:
 ```bash
 cat error.log | ai "Explain what caused this crash"
@@ -69,7 +69,7 @@ ai "Write a Python hello world script" > hello.py
 ```
 
 ## ⚙️ Configuration
-Termai comes with a built-in configuration editor. You can change the AI provider, model, and personality.
+Termux-AI comes with a built-in configuration editor. You can change the AI provider, model, and personality.
 Run:
 ```bash
 ai --config
