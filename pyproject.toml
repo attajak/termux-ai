@@ -13,7 +13,7 @@ authors = [
   {name = "attajak", email = "janrak@gmail.com"},
   {name = "estiaksoyeb", email = "estiakahamed122@gmail.com"}
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "requests",
 ]
