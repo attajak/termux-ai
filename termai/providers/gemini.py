@@ -24,7 +24,7 @@ class GeminiProvider(BaseProvider):
                 print(f"[Debug] Status: {response.status_code}")
             if response.status_code != 200:
                 if response.status_code == 429:
-                    print(f"\n[Error 429] You have exceeded your Gemini API quota.")
+                    print("\n[Error 429] You have exceeded your Gemini API quota.")
                     print("Please check your usage and billing details at aistudio.google.com.")
                 else:
                     print(f"\n[Error {response.status_code}]")

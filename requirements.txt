@@ -1,1 +1,4 @@
+# Termux-AI
+-e .
+# Dependency for Termux-AI
 requests

@@ -14,9 +14,9 @@ def cli_entry_point():
             CONFIG_FILE.unlink()
         else:
             print(f"[{APP_NAME}] No existing config found. Starting first-time setup...")
-    
+
     config = load_config()
-    
+
     if "--reinstall" in sys.argv:
         print(f"[{APP_NAME}] Reinstall complete.")
         return 0
@@ -26,7 +26,7 @@ def cli_entry_point():
         if not config:
             print("[Error] No configuration file found. Run `ai --reinstall` to create one.")
             return 1
-        
+
         debug_config = copy.deepcopy(config)
         if "gemini_config" in debug_config and "api_key" in debug_config["gemini_config"]:
             key = debug_config["gemini_config"]["api_key"]
@@ -34,13 +34,13 @@ def cli_entry_point():
         if "openai_config" in debug_config and "api_key" in debug_config["openai_config"]:
             key = debug_config["openai_config"]["api_key"]
             debug_config["openai_config"]["api_key"] = f"***{key[-4:]}" if key else ""
-            
+
         print(json.dumps(debug_config, indent=4))
         return 0
 
     if config is None and not sys.stdin.isatty():
         return 1
-    
+
     if "--help" in sys.argv or "-h" in sys.argv:
         return print_help()
 

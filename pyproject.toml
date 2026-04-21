@@ -8,7 +8,8 @@ version = "0.3.0"
 description = "A lightweight CLI tool for AI integration in your terminal."
 keywords = ["termai", "term-ai", "termux-ai", "cli", "ai", "termux", "gemini", "openai"]
 readme = "README.md"
-license = {file = "LICENSE"}
+license = 'MIT'
+license-files = ['LICENSE']
 authors = [
   {name = "attajak", email = "janrak@gmail.com"},
   {name = "estiaksoyeb", email = "estiakahamed122@gmail.com"}
@@ -27,3 +28,35 @@ dependencies = [
 
 [project.scripts]
 ai = "termai.cli:main"
+
+[dependency-groups]
+dev = [
+  "nox",
+  {include-group = "lint"},
+  {include-group = "test"}
+]
+lint = [
+  "ruff"
+]
+test = [
+  "pytest"
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C", "B", "Q"]
+ignore = ["E501", "E701", "C901"]
+
+[tool.ruff.format]
+quote-style = 'double'
+
+[tool.pytest.ini_options]
+minversion = 7.0
+addopts = "-q"
+testpaths = "tests"
+python_files = "test_*.py"
+# Example: run a single test function
+# pytest tests/test_basic.py::test_help_returns_zero -q

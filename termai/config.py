@@ -32,7 +32,7 @@ DEFAULT_CONFIG = {
 
 def load_config():
     """
-    Loads config.json. 
+    Loads config.json.
     Handles migration from old 'key' file and old flat config structure if needed.
     Creates default file if missing.
     """
@@ -57,13 +57,13 @@ def load_config():
             new_config = copy.deepcopy(DEFAULT_CONFIG)
             # Preserve old top-level keys
             new_config["proxy"] = config.get("proxy", "")
-            
+
             # Move gemini-specific keys
             new_config["gemini_config"]["api_key"] = config.get("api_key", "")
             new_config["gemini_config"]["model_name"] = config.get("model_name", DEFAULT_CONFIG["gemini_config"]["model_name"])
             new_config["gemini_config"]["system_instruction"] = config.get("system_instruction", DEFAULT_CONFIG["gemini_config"]["system_instruction"])
             new_config["gemini_config"]["generation_config"] = config.get("generation_config", DEFAULT_CONFIG["gemini_config"]["generation_config"])
-            
+
             with open(CONFIG_FILE, "w") as f:
                 json.dump(new_config, f, indent=4)
             print("Migration complete.")
@@ -80,7 +80,7 @@ def load_config():
         with open(OLD_KEY_FILE, "r") as f:
             gemini_api_key = f.read().strip()
         OLD_KEY_FILE.rename(backup_file)
-        
+
     # 3. First Run Setup
     new_config = copy.deepcopy(DEFAULT_CONFIG)
     if sys.stdin.isatty():
@@ -98,7 +98,7 @@ def load_config():
                     print("Error: Gemini key cannot be empty.")
                     sys.exit(1)
             new_config["gemini_config"]["api_key"] = gemini_api_key
-        
+
         elif provider == "2":
             new_config["provider"] = "openai"
             print(f"[{APP_NAME}] Enter your OpenAI API Key. Get it from platform.openai.com")
@@ -117,7 +117,7 @@ def load_config():
     # Save the new configuration
     with open(CONFIG_FILE, "w") as f:
         json.dump(new_config, f, indent=4)
-    
+
     print(f"Configuration saved to {CONFIG_FILE}\n")
 
     # Clean up the legacy key backup file if it exists after migration
@@ -132,15 +132,15 @@ def open_editor():
     Priority: $EDITOR > vim > nano
     """
     # 1. Prioritize the user's explicit choice
-    editor = os.getenv('EDITOR')
+    editor = os.getenv("EDITOR")
 
     # 2. If no $EDITOR, try to find 'vim'
-    if not editor and shutil.which('vim'):
-        editor = 'vim'
-    
+    if not editor and shutil.which("vim"):
+        editor = "vim"
+
     # 3. If still no editor, fall back to 'nano'
     if not editor:
-        editor = 'nano'
+        editor = "nano"
 
     print(f"Opening config in {editor}...")
     try:

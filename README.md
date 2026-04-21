@@ -32,8 +32,9 @@ cd termux-ai
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-pip install -e .
-or
+```
+**or**
+```bash
 pip install -e git+https://github.com/attajak/termux-ai.git
 ```
 
@@ -115,29 +116,55 @@ The configuration file looks like this:
     *   `system_instruction`: A different persona for ChatGPT.
     *   `temperature`: Controls randomness.
     *   `max_tokens`: The maximum number of tokens to generate.
-<!--
 ## 🛠 Development
 If you want to contribute or run Termai in a development environment:
 
 1.  **Clone and set up a virtual environment:**
     ```bash
-    git clone https://github.com/estiaksoyeb/termai
-    cd termai
+    git clone https://github.com/attajak/termux-ai.git
+    cd termux-ai
     python -m venv .venv
     source .venv/bin/activate
     ```
 
-2.  **Install dependencies:**
+2.  **Install runtime dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
 
-3.  **Run in development mode:**
+3.  **Install development tools (linters & test runner):**
+    ```bash
+    pip install -r dev-requirements.txt
+    ```
+
+4.  **Install editable package for development:**
     ```bash
     pip install -e .
-    # Now the 'ai' command will use your local development version.
+    # 'ai' will use the local development version
     ```
--->
+
+Testing & linting
+
+- Run all tests:
+```bash
+pytest
+```
+
+- Run a single test:
+```bash
+pytest tests/test_providers.py::test_gemini_success -q
+```
+
+- Run the linter (ruff):
+```bash
+ruff check .
+```
+
+- Install pre-commit hooks:
+```bash
+pre-commit install
+```
+
 ## ❓ Help & Troubleshooting
 **Command List:**
 ```bash
