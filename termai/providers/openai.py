@@ -1,5 +1,4 @@
 import requests
-from ..constants import GREEN, RESET
 from .base import BaseProvider
 
 class OpenAIProvider(BaseProvider):
@@ -44,7 +43,7 @@ class OpenAIProvider(BaseProvider):
                 message = data["choices"][0].get("message", {})
                 content = message.get("content", "")
                 if content:
-                    print(f"{GREEN}{content.strip()}{RESET}")
+                    print(f"{content.strip()}")
                 else:
                     print("[No content returned]")
                     if debug_mode: print(data)

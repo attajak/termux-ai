@@ -1,5 +1,4 @@
 import requests
-from ..constants import GREEN, RESET
 from .base import BaseProvider
 
 class GeminiProvider(BaseProvider):
@@ -37,7 +36,7 @@ class GeminiProvider(BaseProvider):
             if "candidates" in data and data["candidates"]:
                 cand = data["candidates"][0]
                 if "content" in cand and "parts" in cand["content"] and cand["content"]["parts"]:
-                    print(f"{GREEN}{cand['content']['parts'][0]['text'].strip()}{RESET}")
+                    print(f"{cand['content']['parts'][0]['text'].strip()}")
                 else:
                     print("[No content returned]")
                     if debug_mode: print(data)
