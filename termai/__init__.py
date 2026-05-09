@@ -1,1 +1,1 @@
-# Termai package initialization
+# Termux-AI package initialization

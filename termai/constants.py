@@ -2,7 +2,7 @@ from pathlib import Path
 
 # --- Configuration Paths ---
 APP_NAME = "termai"
-DATA_DIR = Path.home() / ".local/share" / APP_NAME
+DATA_DIR = Path.home() / ".config" / APP_NAME
 # We now use a JSON file for all settings
 CONFIG_FILE = DATA_DIR / "config.json"
 # Legacy file path for migration

@@ -2,7 +2,7 @@
 
 [![Release](https://github.com/attajak/termux-ai/actions/workflows/release.yml/badge.svg)](https://github.com/attajak/termux-ai/actions/workflows/release.yml)
 
-Termux-Ai is a lightweight, zero-dependency CLI wrapper for Google's Gemini AI, built for Termux on Android and general Linux environments.
+Termux-AI is a lightweight, zero-dependency CLI wrapper for Google's Gemini AI, built for Termux on Android and general Linux environments.
 It brings the power of Large Language Models (LLMs) directly to your command line, following the Unix philosophy of piping and standard streams.
 
 ## ⚡ Features
@@ -15,7 +15,7 @@ It brings the power of Large Language Models (LLMs) directly to your command lin
 
 ## 📥 Installation
 ### Method 1: Global Install (Recommended)
-You can install TermuxAI directly using `pip` or `pipx`:
+You can install Termux-AI directly using `pip` or `pipx`:
 ```bash
 # Using pip
 pip install termux-ai
@@ -25,18 +25,14 @@ pipx install termux-ai
 This will make the `ai` command available globally.
 
 ### Method 2: Manual Setup (for Development)
-If you want to contribute or run Termai in a development environment:
+If you want to contribute or run Termux-AI in a development environment:
 ```bash
 git clone https://github.com/attajak/termux-ai.git
 cd termux-ai
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-```
-**or**
-```bash
-pip install -e git+https://github.com/attajak/termux-ai.git
-```
+````
 
 ## 🔑 Setup
 On the very first run, Termai will ask for your Google Gemini API Key.
@@ -116,6 +112,7 @@ The configuration file looks like this:
     *   `system_instruction`: A different persona for ChatGPT.
     *   `temperature`: Controls randomness.
     *   `max_tokens`: The maximum number of tokens to generate.
+
 ## 🛠 Development
 If you want to contribute or run Termai in a development environment:
 
@@ -134,7 +131,7 @@ If you want to contribute or run Termai in a development environment:
 
 3.  **Install development tools (linters & test runner):**
     ```bash
-    pip install -r dev-requirements.txt
+    pip install -r requirements-dev.txt
     ```
 
 4.  **Install editable package for development:**
@@ -158,11 +155,6 @@ pytest tests/test_providers.py::test_gemini_success -q
 - Run the linter (ruff):
 ```bash
 ruff check .
-```
-
-- Install pre-commit hooks:
-```bash
-pre-commit install
 ```
 
 ## ❓ Help & Troubleshooting
