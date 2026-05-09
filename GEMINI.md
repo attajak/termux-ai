@@ -8,10 +8,10 @@ A lightweight, zero-dependency CLI wrapper for Google's Gemini AI (and OpenAI), 
 - **Key Features:** Supports stdin piping, configurable system prompts/models, and minimalist output.
 - **Main Technologies:** Python 3.10+, `requests` library.
 - **Architecture:** 
-    - `termai/cli.py`: Entry point and argument parsing.
-    - `termai/api.py`: Provider dispatcher.
-    - `termai/config.py`: Configuration management (JSON-based).
-    - `termai/providers/`: Modular AI provider implementations (Gemini, OpenAI).
+    - `termai/cli.py`: Entry point using `argparse` for robust argument handling.
+    - `termai/api.py`: Provider dispatcher with a lazy-loading registry.
+    - `termai/config.py`: Configuration management with restricted file permissions (600).
+    - `termai/providers/`: Modular AI provider implementations (Gemini, OpenAI) extending `BaseProvider`.
 
 ## Building and Running
 
@@ -58,10 +58,11 @@ ai --config
 - **Language:** Python 3.10+.
 - **Style:** Adheres to Ruff's default rules (line length 88, double quotes).
 - **Architecture Patterns:** 
-    - Use `BaseProvider` for adding new AI services.
-    - Prefer standard library or lightweight dependencies (e.g., `requests`) to keep the tool fast and portable.
-    - CLI arguments are handled manually in `cli.py` to avoid heavy dependencies like `argparse` or `click` (though `argparse` is standard, the current implementation is manual).
+    - **Provider Registry:** New providers should be registered in `termai/api.py` to be lazily loaded.
+    - **BaseProvider Helpers:** Utilize `_get_common_params`, `_handle_debug`, and `_safe_json_decode` for shared logic across providers.
+    - **Security First:** API keys must be sent via HTTP headers (e.g., `x-goog-api-key`) rather than URL parameters.
+    - **Stability:** All network requests must include a `timeout` and handle `json.JSONDecodeError`.
 - **Configuration:** 
-    - Settings are stored in `~/.config/termux-ai/config.json` (or equivalent).
-    - Sensible defaults are provided in `config.py`.
-- **Testing:** New features should include tests in the `tests/` directory using `pytest`.
+    - Settings are stored in `~/.config/termai/config.json`.
+    - Includes a `request_timeout` setting (default 30s) and nested provider configs.
+- **Testing:** New features should include tests in the `tests/` directory using `pytest`. Mock all network calls.

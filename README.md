@@ -9,6 +9,8 @@ It brings the power of Large Language Models (LLMs) directly to your command lin
  * **🚀 Lightweight:** Uses standard Python requests. No heavy SDKs or complex dependencies.
  * **🟢 Unix Compatible:** Supports piping (stdin). Feed logs, code, or text files directly into the AI.
  * **🛠 Configurable:** Built-in JSON configuration system (ai --config) to edit System Prompts, Temperature, and Models.
+ * **🛡 Secure:** Restricted file permissions (600) for configuration and header-based API key transmission.
+ * **⏳ Robust:** Built-in request timeouts and error handling for unreliable connections.
  * **⚡ Fast:** Defaults to gemini-2.5-flash for instant responses.
  * **🎨 Clean UI:** Minimalist output with syntax-highlighted green text.
  * **🧹 Auto-Cleanup:** The installer sets everything up and deletes the repository to save space.
@@ -82,6 +84,7 @@ The configuration file looks like this:
 {
     "provider": "gemini",
     "proxy": "http://user:pass@127.0.0.1:1080",
+    "request_timeout": 30,
     "gemini_config": {
         "api_key": "YOUR_GEMINI_KEY",
         "model_name": "gemini-2.5-flash",
@@ -92,7 +95,7 @@ The configuration file looks like this:
         }
     },
     "openai_config": {
-        "api_key": "YOUR_OPENAI_KEY",
+        "api_key": "YOUR_OPEN_KEY",
         "model_name": "gpt-4o",
         "system_instruction": "You are a helpful assistant.",
         "temperature": 0.7,
@@ -103,6 +106,7 @@ The configuration file looks like this:
 
 *   **`provider`**: Set to `"gemini"` or `"openai"` to choose your AI provider.
 *   **`proxy`**: (Optional) Set an HTTP or HTTPS proxy for all requests.
+*   **`request_timeout`**: (Optional) Maximum time in seconds to wait for a response (default: 30).
 *   **`gemini_config`**: Settings for when `provider` is `"gemini"`.
     *   `model_name`: Change to `gemini-2.5-pro` or other available models.
     *   `system_instruction`: Give the AI a persona.

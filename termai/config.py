@@ -10,6 +10,7 @@ from .constants import APP_NAME, DATA_DIR, CONFIG_FILE, OLD_KEY_FILE
 DEFAULT_CONFIG = {
     "provider": "gemini",
     "proxy": "",
+    "request_timeout": 30,
     "gemini_config": {
         "api_key": "",
         "model_name": "gemini-2.5-flash",
@@ -36,13 +37,18 @@ def load_config():
     Handles migration from old 'key' file and old flat config structure if needed.
     Creates default file if missing.
     """
-    # Ensure directory exists
+    # Ensure directory exists with restricted permissions
     if not DATA_DIR.exists():
         DATA_DIR.mkdir(parents=True, exist_ok=True)
+        os.chmod(DATA_DIR, 0o700)
 
     config = {}
     # 1. Check for Config File
     if CONFIG_FILE.exists():
+        # Ensure file has restricted permissions
+        if os.stat(CONFIG_FILE).st_mode & 0o077:
+            os.chmod(CONFIG_FILE, 0o600)
+        
         try:
             with open(CONFIG_FILE, "r") as f:
                 config = json.load(f)
@@ -64,7 +70,9 @@ def load_config():
             new_config["gemini_config"]["system_instruction"] = config.get("system_instruction", DEFAULT_CONFIG["gemini_config"]["system_instruction"])
             new_config["gemini_config"]["generation_config"] = config.get("generation_config", DEFAULT_CONFIG["gemini_config"]["generation_config"])
 
-            with open(CONFIG_FILE, "w") as f:
+            # Create file with restricted permissions
+            fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+            with os.fdopen(fd, 'w') as f:
                 json.dump(new_config, f, indent=4)
             print("Migration complete.")
             return new_config
@@ -114,8 +122,9 @@ def load_config():
              return None # Cannot proceed without an API key
         new_config["gemini_config"]["api_key"] = gemini_api_key
 
-    # Save the new configuration
-    with open(CONFIG_FILE, "w") as f:
+    # Save the new configuration with restricted permissions
+    fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, 'w') as f:
         json.dump(new_config, f, indent=4)
 
     print(f"Configuration saved to {CONFIG_FILE}\n")
