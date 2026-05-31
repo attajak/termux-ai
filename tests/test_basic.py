@@ -5,7 +5,7 @@ from termai import config as termai_config
 
 def test_help_returns_zero(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["ai", "--help"])
-    # Mock print_help to avoid actual printing during tests if desired, 
+    # Mock print_help to avoid actual printing during tests if desired,
     # but cli_entry_point should return the result of print_help()
     monkeypatch.setattr("termai.ui.print_help", lambda: 0)
     assert cli.cli_entry_point() == 0

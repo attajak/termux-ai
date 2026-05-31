@@ -72,7 +72,7 @@ def load_config():
 
             # Create file with restricted permissions
             fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-            with os.fdopen(fd, 'w') as f:
+            with os.fdopen(fd, "w") as f:
                 json.dump(new_config, f, indent=4)
             print("Migration complete.")
             return new_config
@@ -124,7 +124,7 @@ def load_config():
 
     # Save the new configuration with restricted permissions
     fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, 'w') as f:
+    with os.fdopen(fd, "w") as f:
         json.dump(new_config, f, indent=4)
 
     print(f"Configuration saved to {CONFIG_FILE}\n")
