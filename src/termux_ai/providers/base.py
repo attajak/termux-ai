@@ -1,6 +1,6 @@
-import requests
 import json
 from abc import ABC, abstractmethod
+
 
 class BaseProvider(ABC):
     @abstractmethod
@@ -18,7 +18,9 @@ class BaseProvider(ABC):
     def _handle_debug(self, debug_mode, provider_name, model_name, extra_info=""):
         """Centralized debug logging."""
         if debug_mode:
-            print(f"[Debug] Provider: {provider_name} | Model: {model_name} {extra_info}")
+            print(
+                f"[Debug] Provider: {provider_name} | Model: {model_name} {extra_info}"
+            )
 
     def _safe_json_decode(self, response, provider_name, debug_mode):
         """Safely decode JSON response with error handling."""

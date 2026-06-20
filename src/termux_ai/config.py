@@ -19,17 +19,18 @@ DEFAULT_CONFIG = {
             "temperature": 0.7,
             "top_p": 0.9,
             "top_k": 40,
-            "maxOutputTokens": 1024
-        }
+            "maxOutputTokens": 1024,
+        },
     },
     "openai_config": {
         "api_key": "",
         "model_name": "gpt-4o",
         "system_instruction": "You are a CLI assistant for command-line users. Do NOT use Markdown. Do NOT use backticks. Do NOT use bolding. Just write plain text. Keep answers concise.",
         "temperature": 0.7,
-        "max_tokens": 1024
-    }
+        "max_tokens": 1024,
+    },
 }
+
 
 def load_config():
     """
@@ -48,7 +49,7 @@ def load_config():
         # Ensure file has restricted permissions
         if os.stat(CONFIG_FILE).st_mode & 0o077:
             os.chmod(CONFIG_FILE, 0o600)
-        
+
         try:
             with open(CONFIG_FILE, "r") as f:
                 config = json.load(f)
@@ -66,9 +67,17 @@ def load_config():
 
             # Move gemini-specific keys
             new_config["gemini_config"]["api_key"] = config.get("api_key", "")
-            new_config["gemini_config"]["model_name"] = config.get("model_name", DEFAULT_CONFIG["gemini_config"]["model_name"])
-            new_config["gemini_config"]["system_instruction"] = config.get("system_instruction", DEFAULT_CONFIG["gemini_config"]["system_instruction"])
-            new_config["gemini_config"]["generation_config"] = config.get("generation_config", DEFAULT_CONFIG["gemini_config"]["generation_config"])
+            new_config["gemini_config"]["model_name"] = config.get(
+                "model_name", DEFAULT_CONFIG["gemini_config"]["model_name"]
+            )
+            new_config["gemini_config"]["system_instruction"] = config.get(
+                "system_instruction",
+                DEFAULT_CONFIG["gemini_config"]["system_instruction"],
+            )
+            new_config["gemini_config"]["generation_config"] = config.get(
+                "generation_config",
+                DEFAULT_CONFIG["gemini_config"]["generation_config"],
+            )
 
             # Create file with restricted permissions
             fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
@@ -100,7 +109,9 @@ def load_config():
         if provider == "1":
             new_config["provider"] = "gemini"
             if not gemini_api_key:
-                print(f"[{APP_NAME}] Enter your Gemini API Key. Get it from aistudio.google.com")
+                print(
+                    f"[{APP_NAME}] Enter your Gemini API Key. Get it from aistudio.google.com"
+                )
                 gemini_api_key = input("Gemini API Key: ").strip()
                 if not gemini_api_key:
                     print("Error: Gemini key cannot be empty.")
@@ -109,7 +120,9 @@ def load_config():
 
         elif provider == "2":
             new_config["provider"] = "openai"
-            print(f"[{APP_NAME}] Enter your OpenAI API Key. Get it from platform.openai.com")
+            print(
+                f"[{APP_NAME}] Enter your OpenAI API Key. Get it from platform.openai.com"
+            )
             openai_api_key = input("OpenAI API Key: ").strip()
             if not openai_api_key:
                 print("Error: OpenAI key cannot be empty.")
@@ -119,7 +132,7 @@ def load_config():
         # Default to Gemini if non-interactive and no config exists
         # This part might need adjustment based on desired non-interactive behavior
         if not gemini_api_key:
-             return None # Cannot proceed without an API key
+            return None  # Cannot proceed without an API key
         new_config["gemini_config"]["api_key"] = gemini_api_key
 
     # Save the new configuration with restricted permissions
@@ -131,9 +144,10 @@ def load_config():
 
     # Clean up the legacy key backup file if it exists after migration
     if backup_file.exists():
-         backup_file.unlink()
+        backup_file.unlink()
 
     return new_config
+
 
 def open_editor():
     """
@@ -155,6 +169,8 @@ def open_editor():
     try:
         subprocess.call([editor, str(CONFIG_FILE)])
     except FileNotFoundError:
-        print(f"[Error] Editor '{editor}' not found. Please install it or set the $EDITOR environment variable.")
+        print(
+            f"[Error] Editor '{editor}' not found. Please install it or set the $EDITOR environment variable."
+        )
         return 1
-    return 0 # Return 0 for success
+    return 0  # Return 0 for success

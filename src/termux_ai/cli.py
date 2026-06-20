@@ -7,19 +7,38 @@ from .config import load_config, open_editor
 from .api import send_request
 from .ui import print_help
 
+
 def cli_entry_point():
     parser = argparse.ArgumentParser(
         description="Termux-AI: A lightweight CLI wrapper for Gemini and OpenAI.",
-        add_help=False # We handle --help manually to keep UI consistent or use custom help
+        add_help=False,  # We handle --help manually to keep UI consistent or use custom help
     )
-    
+
     # Define arguments
     parser.add_argument("prompt", nargs="*", help="The prompt to send to the AI.")
-    parser.add_argument("--config", action="store_true", help="Open the configuration file in your editor.")
-    parser.add_argument("--debug", action="store_true", help="Enable debug mode to see raw API responses.")
-    parser.add_argument("--debug-config", action="store_true", help="Print the loaded configuration (keys redacted).")
-    parser.add_argument("--reinstall", action="store_true", help="Reset configuration and re-run first-time setup.")
-    parser.add_argument("--help", "-h", action="store_true", help="Show this help message and exit.")
+    parser.add_argument(
+        "--config",
+        action="store_true",
+        help="Open the configuration file in your editor.",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug mode to see raw API responses.",
+    )
+    parser.add_argument(
+        "--debug-config",
+        action="store_true",
+        help="Print the loaded configuration (keys redacted).",
+    )
+    parser.add_argument(
+        "--reinstall",
+        action="store_true",
+        help="Reset configuration and re-run first-time setup.",
+    )
+    parser.add_argument(
+        "--help", "-h", action="store_true", help="Show this help message and exit."
+    )
 
     # Parse arguments
     # Note: parse_known_args can be used if we want to allow unknown flags to be part of the prompt,
@@ -36,7 +55,9 @@ def cli_entry_point():
             print(f"[{APP_NAME}] Deleting existing config for reinstall...")
             CONFIG_FILE.unlink()
         else:
-            print(f"[{APP_NAME}] No existing config found. Starting first-time setup...")
+            print(
+                f"[{APP_NAME}] No existing config found. Starting first-time setup..."
+            )
         # load_config() will trigger setup if file is missing
         load_config()
         print(f"[{APP_NAME}] Reinstall complete.")
@@ -48,7 +69,9 @@ def cli_entry_point():
     # 3. Handle Debug Config
     if args.debug_config:
         if not config:
-            print("[Error] No configuration file found. Run `ai --reinstall` to create one.")
+            print(
+                "[Error] No configuration file found. Run `ai --reinstall` to create one."
+            )
             return 1
 
         debug_config = copy.deepcopy(config)
@@ -82,6 +105,7 @@ def cli_entry_point():
         return 1
 
     return send_request(config, user_input, args.debug)
+
 
 def main():
     sys.exit(cli_entry_point())

@@ -1,6 +1,7 @@
 import requests
 from .base import BaseProvider
 
+
 class GeminiProvider(BaseProvider):
     def send_request(self, config, user_input, debug_mode):
         gemini_config = config.get("gemini_config", {})
@@ -8,25 +9,29 @@ class GeminiProvider(BaseProvider):
         model_name = gemini_config.get("model_name", "gemini-2.5-flash")
         system_instr = gemini_config.get("system_instruction", "")
         gen_config = gemini_config.get("generation_config", {})
-        
+
         proxies, timeout = self._get_common_params(config)
         api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
-        headers = {
-            "Content-Type": "application/json",
-            "x-goog-api-key": api_key
-        }
-        
+        headers = {"Content-Type": "application/json", "x-goog-api-key": api_key}
+
         payload = {
             "contents": [{"parts": [{"text": user_input}]}],
             "systemInstruction": {"parts": [{"text": system_instr}]},
-            "generationConfig": gen_config
+            "generationConfig": gen_config,
         }
-        
-        self._handle_debug(debug_mode, "Gemini", model_name, f"| Temp: {gen_config.get('temperature')} | Timeout: {timeout}s")
-        
+
+        self._handle_debug(
+            debug_mode,
+            "Gemini",
+            model_name,
+            f"| Temp: {gen_config.get('temperature')} | Timeout: {timeout}s",
+        )
+
         try:
-            response = requests.post(api_url, headers=headers, json=payload, proxies=proxies, timeout=timeout)
-            
+            response = requests.post(
+                api_url, headers=headers, json=payload, proxies=proxies, timeout=timeout
+            )
+
             if response.status_code != 200:
                 if response.status_code == 429:
                     print("\n[Error 429] You have exceeded your Gemini API quota.")
@@ -34,7 +39,7 @@ class GeminiProvider(BaseProvider):
                     print(f"\n[Error {response.status_code}]")
                     print(response.text)
                 return 1
-            
+
             data = self._safe_json_decode(response, "Gemini", debug_mode)
             if not data:
                 return 1
@@ -42,16 +47,21 @@ class GeminiProvider(BaseProvider):
             if "promptFeedback" in data and "blockReason" in data["promptFeedback"]:
                 print(f"[Blocked] Reason: {data['promptFeedback']['blockReason']}")
                 return 0
-            
+
             if "candidates" in data and data["candidates"]:
                 cand = data["candidates"][0]
-                if "content" in cand and "parts" in cand["content"] and cand["content"]["parts"]:
+                if (
+                    "content" in cand
+                    and "parts" in cand["content"]
+                    and cand["content"]["parts"]
+                ):
                     print(f"{cand['content']['parts'][0]['text'].strip()}")
                 else:
                     print("[No content returned]")
             else:
                 print("[Error] Invalid response format from Gemini")
-                if debug_mode: print(data)
+                if debug_mode:
+                    print(data)
             return 0
         except Exception as e:
             print(f"\n[Connection Error] {e}")
