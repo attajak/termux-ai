@@ -29,15 +29,40 @@ DEFAULT_CONFIG = {
         "temperature": 0.7,
         "max_tokens": 1024,
     },
+    "groq_config": {
+        "api_key": "",
+        "model_name": "llama-3.3-70b-versatile",
+        "system_instruction": "You are a CLI assistant for command-line users. Do NOT use Markdown. Do NOT use backticks. Do NOT use bolding. Just write plain text. Keep answers concise.",
+        "temperature": 0.7,
+        "max_tokens": 1024,
+    },
+    "mistral_config": {
+        "api_key": "",
+        "model_name": "mistral-small-latest",
+        "system_instruction": "You are a CLI assistant for command-line users. Do NOT use Markdown. Do NOT use backticks. Do NOT use bolding. Just write plain text. Keep answers concise.",
+        "temperature": 0.7,
+    },
 }
 
 
 def load_config():
     """
     Loads config.json.
-    Handles migration from old 'key' file and old flat config structure if needed.
+    Handles migration from old path (~/.config/termai) to new path (~/.local/share/termux-ai),
+    old 'key' file, and old flat config structure if needed.
     Creates default file if missing.
     """
+    # 0. Migrate from old XDG config directory if it exists
+    old_data_dir = Path.home() / ".config" / "termai"
+    if old_data_dir.exists():
+        print(f"[{APP_NAME}] Migrating data from {old_data_dir} to {DATA_DIR}...")
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        # Move files
+        for item in old_data_dir.iterdir():
+            shutil.move(str(item), str(DATA_DIR / item.name))
+        old_data_dir.rmdir()
+        print("Migration complete.")
+
     # Ensure directory exists with restricted permissions
     if not DATA_DIR.exists():
         DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -58,33 +83,32 @@ def load_config():
             print("Please fix it or delete it to reset defaults.")
             sys.exit(1)
 
-        # Migration from old flat structure to new nested structure
-        if "api_key" in config:
-            print(f"[{APP_NAME}] Migrating config to new nested structure...")
-            new_config = copy.deepcopy(DEFAULT_CONFIG)
-            # Preserve old top-level keys
-            new_config["proxy"] = config.get("proxy", "")
-
-            # Move gemini-specific keys
-            new_config["gemini_config"]["api_key"] = config.get("api_key", "")
-            new_config["gemini_config"]["model_name"] = config.get(
-                "model_name", DEFAULT_CONFIG["gemini_config"]["model_name"]
-            )
-            new_config["gemini_config"]["system_instruction"] = config.get(
-                "system_instruction",
-                DEFAULT_CONFIG["gemini_config"]["system_instruction"],
-            )
-            new_config["gemini_config"]["generation_config"] = config.get(
-                "generation_config",
-                DEFAULT_CONFIG["gemini_config"]["generation_config"],
-            )
-
+        # Migration from old structure to new nested structure
+        if "active_config" not in config:
+            print(f"[{APP_NAME}] Migrating config to new simplified structure...")
+            provider = config.get("provider", "gemini")
+            new_config = {
+                "provider": provider,
+                "proxy": config.get("proxy", ""),
+                "request_timeout": config.get("request_timeout", 30),
+                "active_config": config.get(f"{provider}_config", DEFAULT_CONFIG.get(f"{provider}_config", {}))
+            }
             # Create file with restricted permissions
             fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
             with os.fdopen(fd, "w") as f:
                 json.dump(new_config, f, indent=4)
             print("Migration complete.")
-            return new_config
+            config = new_config
+
+        # Check for environment variables and override active_config
+        active_config = config.get("active_config", {})
+        
+        # Override based on provider
+        provider = config.get("provider")
+        env_key = os.getenv(f"{provider.upper()}_API_KEY")
+        if env_key:
+            active_config["api_key"] = env_key
+            config["active_config"] = active_config
 
         return config
 
@@ -99,41 +123,38 @@ def load_config():
         OLD_KEY_FILE.rename(backup_file)
 
     # 3. First Run Setup
-    new_config = copy.deepcopy(DEFAULT_CONFIG)
+    new_config = {
+        "provider": "",
+        "proxy": "",
+        "request_timeout": 30,
+        "active_config": {}
+    }
     if sys.stdin.isatty():
         print(f"[{APP_NAME}] First run! Choose your primary AI provider.")
         provider = ""
-        while provider not in ["1", "2"]:
-            provider = input("Enter 1 for Gemini or 2 for OpenAI: ").strip()
+        while provider not in ["1", "2", "3", "4"]:
+            provider = input("Enter 1 for Gemini, 2 for OpenAI, 3 for Groq, 4 for Mistral: ").strip()
 
-        if provider == "1":
-            new_config["provider"] = "gemini"
-            if not gemini_api_key:
-                print(
-                    f"[{APP_NAME}] Enter your Gemini API Key. Get it from aistudio.google.com"
-                )
-                gemini_api_key = input("Gemini API Key: ").strip()
-                if not gemini_api_key:
-                    print("Error: Gemini key cannot be empty.")
-                    sys.exit(1)
-            new_config["gemini_config"]["api_key"] = gemini_api_key
-
-        elif provider == "2":
-            new_config["provider"] = "openai"
-            print(
-                f"[{APP_NAME}] Enter your OpenAI API Key. Get it from platform.openai.com"
-            )
-            openai_api_key = input("OpenAI API Key: ").strip()
-            if not openai_api_key:
-                print("Error: OpenAI key cannot be empty.")
-                sys.exit(1)
-            new_config["openai_config"]["api_key"] = openai_api_key
+        provider_map = {"1": "gemini", "2": "openai", "3": "groq", "4": "mistral"}
+        provider = provider_map[provider]
+        
+        new_config["provider"] = provider
+        new_config["active_config"] = DEFAULT_CONFIG.get(f"{provider}_config", {})
+        
+        api_key = input(f"Enter your {provider.capitalize()} API Key: ").strip()
+        if not api_key:
+            print("Error: API key cannot be empty.")
+            sys.exit(1)
+        new_config["active_config"]["api_key"] = api_key
+        
     else:
         # Default to Gemini if non-interactive and no config exists
-        # This part might need adjustment based on desired non-interactive behavior
+        new_config["provider"] = "gemini"
+        new_config["active_config"] = DEFAULT_CONFIG.get("gemini_config", {})
+        
         if not gemini_api_key:
             return None  # Cannot proceed without an API key
-        new_config["gemini_config"]["api_key"] = gemini_api_key
+        new_config["active_config"]["api_key"] = gemini_api_key
 
     # Save the new configuration with restricted permissions
     fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)

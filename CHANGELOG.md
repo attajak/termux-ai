@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-07-08
+
+### Added
+- **Providers:** Added Groq and Mistral AI support.
+- **Features:** Streaming responses for all providers.
+- **Features:** Chat Mode (`--chat`) with conversation history management (`~/.local/share/termux-ai/history.json`).
+- **Features:** Environment variable support (`GEMINI_API_KEY`, `OPENAI_API_KEY`, `GROQ_API_KEY`, `MISTRAL_API_KEY`).
+- **UX:** Added loading indicator for API requests.
+- **Architecture:** Restructured configuration to `~/.local/share/termux-ai/` following XDG spec.
+- **Architecture:** Restructured `config.json` to store only active provider config.
+- **DevOps:** Added mandatory linting (Ruff) and formatting checks to CI pipeline.
+- **DevOps:** Pinned dependencies (`requests==2.34.2`).
+
+### Changed
+- **CLI:** Added `-c` alias for `--config`.
+
 ## [0.4.0] - 2026-05-09
 
 ### Added

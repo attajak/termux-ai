@@ -1,4 +1,1 @@
-# Termux-AI (editable)
--e .
-# Dependency for Termux-AI
-requests
+requests==2.34.2

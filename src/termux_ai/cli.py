@@ -18,6 +18,7 @@ def cli_entry_point():
     parser.add_argument("prompt", nargs="*", help="The prompt to send to the AI.")
     parser.add_argument(
         "--config",
+        "-c",
         action="store_true",
         help="Open the configuration file in your editor.",
     )
@@ -36,6 +37,13 @@ def cli_entry_point():
         action="store_true",
         help="Reset configuration and re-run first-time setup.",
     )
+    parser.add_argument(
+        "--chat",
+        action="store_true",
+        help="Enable chat mode (uses conversation history).",
+    )
+    # help and -h are already added correctly by the parser (standard behavior),
+    # but the explicit addition here handles the custom help menu.
     parser.add_argument(
         "--help", "-h", action="store_true", help="Show this help message and exit."
     )
@@ -89,6 +97,8 @@ def cli_entry_point():
         return open_editor()
 
     # 5. Handle Request
+    from .chat import load_history, add_to_history
+    
     user_input = ""
     # Check for stdin first (piping)
     if not sys.stdin.isatty():
@@ -104,7 +114,17 @@ def cli_entry_point():
     if not config and not sys.stdin.isatty():
         return 1
 
-    return send_request(config, user_input, args.debug)
+    history = []
+    if args.chat:
+        history = load_history()
+        add_to_history("user", user_input)
+
+    # Need to update send_request to accept history
+    # For now, just call it. We need to update API to pass history.
+    # Actually, the providers need to know how to handle history.
+    
+    # Simple fix: update send_request signature is better
+    return send_request(config, user_input, args.debug, history=history)
 
 
 def main():

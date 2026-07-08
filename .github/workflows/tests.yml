@@ -36,6 +36,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
+          python -m pip install ruff
+
+      - name: Lint and Format Check
+        run: |
+          ruff check .
+          ruff format --check .
 
       # The offline suite needs neither proot nor network access; the opt-in
       # live tests stay skipped because RUN_LIVE_TESTS is unset.

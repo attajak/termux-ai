@@ -5,6 +5,8 @@ import importlib
 PROVIDER_REGISTRY = {
     "gemini": ("termux_ai.providers.gemini", "GeminiProvider"),
     "openai": ("termux_ai.providers.openai", "OpenAIProvider"),
+    "groq": ("termux_ai.providers.groq", "GroqProvider"),
+    "mistral": ("termux_ai.providers.mistral", "MistralProvider"),
 }
 
 _provider_instances = {}
@@ -32,7 +34,9 @@ def get_provider(name):
         return None
 
 
-def send_request(config, user_input, debug_mode):
+def send_request(config, user_input, debug_mode, history=None):
+    from .ui import show_loading, stop_loading
+    
     provider_name = config.get("provider", "gemini")
     provider = get_provider(provider_name)
 
@@ -40,7 +44,13 @@ def send_request(config, user_input, debug_mode):
         print(f"[Error] Provider '{provider_name}' is not supported or failed to load.")
         return 1
 
-    return provider.send_request(config, user_input, debug_mode)
+    # Start loading indicator
+    spinner_thread = show_loading()
+    try:
+        return provider.send_request(config, user_input, debug_mode, history=history)
+    finally:
+        # Always stop loading, regardless of success/failure
+        stop_loading(spinner_thread)
 
 
 # Keep these for backward compatibility if needed in other parts of the code
