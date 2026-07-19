@@ -1,3 +1,4 @@
+import json
 import requests
 from .base import BaseProvider
 
@@ -39,9 +40,14 @@ class OpenAIProvider(BaseProvider):
         try:
             payload["stream"] = True
             response = requests.post(
-                api_url, headers=headers, json=payload, proxies=proxies, timeout=timeout, stream=True
+                api_url,
+                headers=headers,
+                json=payload,
+                proxies=proxies,
+                timeout=timeout,
+                stream=True,
             )
-            
+
             if response.status_code != 200:
                 if response.status_code == 429:
                     print("\n[Error 429] You have exceeded your OpenAI API quota.")
@@ -51,29 +57,37 @@ class OpenAIProvider(BaseProvider):
                 return 1
 
             full_response = ""
+            parsed_any = False
             for line in response.iter_lines():
                 if line:
-                    decoded_line = line.decode('utf-8')
-                    if decoded_line.startswith('data: '):
+                    decoded_line = line.decode("utf-8")
+                    if decoded_line.startswith("data: "):
                         data_str = decoded_line[6:]
-                        if data_str == '[DONE]':
+                        if data_str == "[DONE]":
+                            parsed_any = True
                             break
                         try:
                             data = json.loads(data_str)
-                            content = data['choices'][0]['delta'].get('content')
+                            content = data["choices"][0]["delta"].get("content")
                             if content:
-                                print(content, end='', flush=True)
+                                print(content, end="", flush=True)
                                 full_response += content
+                                parsed_any = True
                         except (json.JSONDecodeError, KeyError, Exception) as e:
                             if debug_mode:
                                 print(f"\n[Debug] Stream parse error: {e}")
                             continue
-            print() # Newline after streaming complete
-            
+            print()  # Newline after streaming complete
+
+            if not parsed_any:
+                print("\n[Error] Failed to decode JSON response from OpenAI.")
+                return 1
+
             if history is not None:
                 from ..chat import add_to_history
+
                 add_to_history("assistant", full_response)
-                
+
             return 0
         except requests.exceptions.RequestException as e:
             print(f"\n[Connection Error] {e}")

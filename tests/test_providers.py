@@ -8,18 +8,33 @@ class DummyResponse:
     def __init__(self, status_code, json_data, text=None):
         self.status_code = status_code
         self._json = json_data
-        self.text = text or json.dumps(json_data)
+        self.text = text or (json.dumps(json_data) if json_data is not None else "")
 
     def json(self):
         if self._json is None:
             raise json.JSONDecodeError("Expecting value", "", 0)
         return self._json
 
+    def iter_lines(self):
+        if self._json:
+            if "candidates" in self._json:
+                yield json.dumps(self._json).encode("utf-8")
+            elif "choices" in self._json:
+                choice = self._json["choices"][0]
+                if "message" in choice:
+                    content = choice["message"].get("content", "")
+                    yield ("data: " + json.dumps({"choices": [{"delta": {"content": content}}]})).encode("utf-8")
+                    yield b"data: [DONE]"
+                else:
+                    yield json.dumps(self._json).encode("utf-8")
+        elif self.text:
+            yield self.text.encode("utf-8")
+
 
 def test_gemini_success(monkeypatch, capsys):
     sample = {"candidates": [{"content": {"parts": [{"text": "hello gemini"}]}}]}
 
-    def fake_post(url, json=None, headers=None, proxies=None, timeout=None):
+    def fake_post(url, json=None, headers=None, proxies=None, timeout=None, **kwargs):
         # Verify headers for Gemini
         assert headers["x-goog-api-key"] == "test_key"
         assert "key=" not in url
@@ -45,7 +60,7 @@ def test_gemini_success(monkeypatch, capsys):
 def test_openai_success(monkeypatch, capsys):
     sample = {"choices": [{"message": {"content": "hello openai"}}]}
 
-    def fake_post(url, json=None, headers=None, proxies=None, timeout=None):
+    def fake_post(url, json=None, headers=None, proxies=None, timeout=None, **kwargs):
         assert headers["Authorization"] == "Bearer test_key_openai"
         assert timeout == 15
         return DummyResponse(200, sample)

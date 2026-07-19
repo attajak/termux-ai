@@ -1,3 +1,4 @@
+import json
 import requests
 from .base import BaseProvider
 
@@ -36,7 +37,12 @@ class GeminiProvider(BaseProvider):
 
         try:
             response = requests.post(
-                api_url, headers=headers, json=payload, proxies=proxies, timeout=timeout, stream=True
+                api_url,
+                headers=headers,
+                json=payload,
+                proxies=proxies,
+                timeout=timeout,
+                stream=True,
             )
 
             if response.status_code != 200:
@@ -48,27 +54,34 @@ class GeminiProvider(BaseProvider):
                 return 1
 
             full_response = ""
+            parsed_any = False
             for line in response.iter_lines():
                 if line:
-                    decoded_line = line.decode('utf-8')
-                    if decoded_line.startswith('{'):
+                    decoded_line = line.decode("utf-8")
+                    if decoded_line.startswith("{"):
                         try:
-                            json_str = decoded_line.lstrip(', ')
+                            json_str = decoded_line.lstrip(", ")
                             data = json.loads(json_str)
                             if "candidates" in data and data["candidates"]:
                                 cand = data["candidates"][0]
                                 if "content" in cand and "parts" in cand["content"]:
                                     text = cand["content"]["parts"][0]["text"]
-                                    print(text, end='', flush=True)
+                                    print(text, end="", flush=True)
                                     full_response += text
+                                    parsed_any = True
                         except (json.JSONDecodeError, KeyError):
                             continue
             print()
-            
+
+            if not parsed_any:
+                print("\n[Error] Failed to decode JSON response from Gemini.")
+                return 1
+
             if history is not None:
                 from ..chat import add_to_history
+
                 add_to_history("assistant", full_response)
-                
+
             return 0
         except Exception as e:
             print(f"\n[Connection Error] {e}")

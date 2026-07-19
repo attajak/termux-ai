@@ -2,8 +2,8 @@ import os
 import sys
 import json
 import subprocess
-import copy
 import shutil
+from pathlib import Path
 from .constants import APP_NAME, DATA_DIR, CONFIG_FILE, OLD_KEY_FILE
 
 # --- Default Settings ---
@@ -91,7 +91,9 @@ def load_config():
                 "provider": provider,
                 "proxy": config.get("proxy", ""),
                 "request_timeout": config.get("request_timeout", 30),
-                "active_config": config.get(f"{provider}_config", DEFAULT_CONFIG.get(f"{provider}_config", {}))
+                "active_config": config.get(
+                    f"{provider}_config", DEFAULT_CONFIG.get(f"{provider}_config", {})
+                ),
             }
             # Create file with restricted permissions
             fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
@@ -102,7 +104,7 @@ def load_config():
 
         # Check for environment variables and override active_config
         active_config = config.get("active_config", {})
-        
+
         # Override based on provider
         provider = config.get("provider")
         env_key = os.getenv(f"{provider.upper()}_API_KEY")
@@ -127,31 +129,33 @@ def load_config():
         "provider": "",
         "proxy": "",
         "request_timeout": 30,
-        "active_config": {}
+        "active_config": {},
     }
     if sys.stdin.isatty():
         print(f"[{APP_NAME}] First run! Choose your primary AI provider.")
         provider = ""
         while provider not in ["1", "2", "3", "4"]:
-            provider = input("Enter 1 for Gemini, 2 for OpenAI, 3 for Groq, 4 for Mistral: ").strip()
+            provider = input(
+                "Enter 1 for Gemini, 2 for OpenAI, 3 for Groq, 4 for Mistral: "
+            ).strip()
 
         provider_map = {"1": "gemini", "2": "openai", "3": "groq", "4": "mistral"}
         provider = provider_map[provider]
-        
+
         new_config["provider"] = provider
         new_config["active_config"] = DEFAULT_CONFIG.get(f"{provider}_config", {})
-        
+
         api_key = input(f"Enter your {provider.capitalize()} API Key: ").strip()
         if not api_key:
             print("Error: API key cannot be empty.")
             sys.exit(1)
         new_config["active_config"]["api_key"] = api_key
-        
+
     else:
         # Default to Gemini if non-interactive and no config exists
         new_config["provider"] = "gemini"
         new_config["active_config"] = DEFAULT_CONFIG.get("gemini_config", {})
-        
+
         if not gemini_api_key:
             return None  # Cannot proceed without an API key
         new_config["active_config"]["api_key"] = gemini_api_key
