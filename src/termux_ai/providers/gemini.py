@@ -54,27 +54,35 @@ class GeminiProvider(BaseProvider):
                 return 1
 
             full_response = ""
-            parsed_any = False
+            full_json_str = ""
             for line in response.iter_lines():
                 if line:
                     decoded_line = line.decode("utf-8")
-                    if decoded_line.startswith("{"):
-                        try:
-                            json_str = decoded_line.lstrip(", ")
-                            data = json.loads(json_str)
-                            if "candidates" in data and data["candidates"]:
-                                cand = data["candidates"][0]
-                                if "content" in cand and "parts" in cand["content"]:
-                                    text = cand["content"]["parts"][0]["text"]
-                                    print(text, end="", flush=True)
-                                    full_response += text
-                                    parsed_any = True
-                        except (json.JSONDecodeError, KeyError):
-                            continue
-            print()
+                    full_json_str += decoded_line
+            
+            # Try to parse the entire response as a single JSON
+            try:
+                # Gemini streamGenerateContent returns a list of JSON objects, 
+                # or a wrapped object. The debug output shows it's a list.
+                data_list = json.loads(full_json_str)
+                parsed_any = False
+                for data in data_list:
+                    if "candidates" in data and data["candidates"]:
+                        cand = data["candidates"][0]
+                        if "content" in cand and "parts" in cand["content"]:
+                            text = cand["content"]["parts"][0]["text"]
+                            print(text, end="", flush=True)
+                            full_response += text
+                            parsed_any = True
+                print()
+            except json.JSONDecodeError as e:
+                if debug_mode:
+                    print(f"\n[Debug] Stream parse error: {e}")
+                print("\n[Error] Failed to decode JSON response from Gemini.")
+                return 1
 
             if not parsed_any:
-                print("\n[Error] Failed to decode JSON response from Gemini.")
+                print("\n[Error] No content found in Gemini response.")
                 return 1
 
             if history is not None:
