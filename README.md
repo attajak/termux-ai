@@ -1,6 +1,6 @@
 # Termux-AI
 
-[![Release](https://github.com/attajak/termux-ai/actions/workflows/release.yml/badge.svg)](https://github.com/attajak/termux-ai/actions/workflows/release.yml)
+[![Publish to PyPI](https://github.com/attajak/termux-ai/actions/workflows/release.yml/badge.svg)](https://github.com/attajak/termux-ai/actions/workflows/release.yml)
 
 Termux-AI is a lightweight, zero-dependency CLI wrapper for AI models (Gemini, OpenAI, Groq, Mistral), built for Termux on Android and general Linux environments. It brings the power of LLMs directly to your command line, following the Unix philosophy of piping and standard streams.
 
