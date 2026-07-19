@@ -37,7 +37,7 @@ def test_prompt_parsing(monkeypatch):
 
     called_with = []
 
-    def mock_send_request(config, user_input, debug):
+    def mock_send_request(config, user_input, debug, **kwargs):
         called_with.append(user_input)
         return 0
 
@@ -56,7 +56,7 @@ def test_piping_input(monkeypatch):
 
     called_with = []
 
-    def mock_send_request(config, user_input, debug):
+    def mock_send_request(config, user_input, debug, **kwargs):
         called_with.append(user_input)
         return 0
 

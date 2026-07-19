@@ -1,6 +1,7 @@
 import json
 from .constants import HISTORY_FILE
 
+
 def load_history():
     if not HISTORY_FILE.exists():
         return []
@@ -10,9 +11,11 @@ def load_history():
     except json.JSONDecodeError:
         return []
 
+
 def save_history(history):
     with open(HISTORY_FILE, "w") as f:
         json.dump(history, f, indent=4)
+
 
 def add_to_history(role, content):
     history = load_history()

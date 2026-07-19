@@ -57,6 +57,18 @@ def cli_entry_point():
     if args.help:
         return print_help()
 
+    # Check if no arguments provided (and no stdin)
+    if (
+        not args.prompt
+        and not args.config
+        and not args.debug
+        and not args.debug_config
+        and not args.reinstall
+        and not args.chat
+        and sys.stdin.isatty()
+    ):
+        return print_help()
+
     # 2. Handle Reinstall
     if args.reinstall:
         if CONFIG_FILE.exists():
@@ -98,7 +110,7 @@ def cli_entry_point():
 
     # 5. Handle Request
     from .chat import load_history, add_to_history
-    
+
     user_input = ""
     # Check for stdin first (piping)
     if not sys.stdin.isatty():
@@ -122,7 +134,7 @@ def cli_entry_point():
     # Need to update send_request to accept history
     # For now, just call it. We need to update API to pass history.
     # Actually, the providers need to know how to handle history.
-    
+
     # Simple fix: update send_request signature is better
     return send_request(config, user_input, args.debug, history=history)
 

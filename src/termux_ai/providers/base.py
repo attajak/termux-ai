@@ -1,4 +1,3 @@
-import json
 from abc import ABC, abstractmethod
 
 
@@ -28,8 +27,8 @@ class BaseProvider(ABC):
         try:
             for line in response.iter_lines():
                 if line:
-                    decoded_line = line.decode('utf-8')
-                    # Logic here depends on the provider, so this method 
+                    decoded_line = line.decode("utf-8")
+                    # Logic here depends on the provider, so this method
                     # should be overridden or implemented to handle variations.
                     yield decoded_line
         except Exception as e:

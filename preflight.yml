@@ -1,0 +1,172 @@
+projectName: termux-ai
+stack: python
+urls:
+    production: https://pypi.org/p/termux-ai
+services:
+    activecampaign:
+        declared: false
+    algolia:
+        declared: false
+    amplitude:
+        declared: false
+    anthropic:
+        declared: false
+    auth0:
+        declared: false
+    aweber:
+        declared: false
+    aws_s3:
+        declared: false
+    aws_ses:
+        declared: false
+    beehiiv:
+        declared: false
+    braintree:
+        declared: false
+    bugsnag:
+        declared: false
+    buttondown:
+        declared: false
+    campaignmonitor:
+        declared: false
+    clerk:
+        declared: false
+    cloudflare:
+        declared: false
+    cloudinary:
+        declared: false
+    cohere:
+        declared: false
+    convertkit:
+        declared: false
+    convex:
+        declared: false
+    cookiebot:
+        declared: false
+    cookieconsent:
+        declared: false
+    cookieyes:
+        declared: false
+    crisp:
+        declared: false
+    datadog:
+        declared: false
+    datafast:
+        declared: false
+    discord:
+        declared: false
+    drip:
+        declared: false
+    elasticsearch:
+        declared: false
+    fathom:
+        declared: false
+    firebase:
+        declared: false
+    fullres:
+        declared: false
+    google_ai:
+        declared: true
+    google_analytics:
+        declared: false
+    grok:
+        declared: false
+    honeybadger:
+        declared: false
+    hotjar:
+        declared: false
+    huggingface:
+        declared: false
+    intercom:
+        declared: false
+    iubenda:
+        declared: false
+    klaviyo:
+        declared: false
+    lemonsqueezy:
+        declared: false
+    logrocket:
+        declared: false
+    mailchimp:
+        declared: false
+    mailgun:
+        declared: false
+    mistral:
+        declared: false
+    mixpanel:
+        declared: false
+    newrelic:
+        declared: false
+    onetrust:
+        declared: false
+    openai:
+        declared: false
+    paddle:
+        declared: false
+    paypal:
+        declared: false
+    perplexity:
+        declared: false
+    plausible:
+        declared: false
+    posthog:
+        declared: false
+    postmark:
+        declared: false
+    rabbitmq:
+        declared: false
+    redis:
+        declared: false
+    replicate:
+        declared: false
+    resend:
+        declared: false
+    rollbar:
+        declared: false
+    segment:
+        declared: false
+    sendgrid:
+        declared: false
+    sentry:
+        declared: false
+    sidekiq:
+        declared: false
+    slack:
+        declared: false
+    stripe:
+        declared: false
+    supabase:
+        declared: false
+    termly:
+        declared: false
+    together_ai:
+        declared: false
+    twilio:
+        declared: false
+    umami:
+        declared: false
+    workos:
+        declared: false
+checks:
+    envParity:
+        enabled: true
+        envFile: .env
+        exampleFile: .env.example
+    healthEndpoint:
+        enabled: true
+        path: /health
+    security:
+        enabled: true
+    secrets:
+        enabled: true
+    adsTxt:
+        enabled: false
+    license:
+        enabled: true
+    indexNow:
+        enabled: false
+        key: ""
+    emailAuth:
+        enabled: false
+    humansTxt:
+        enabled: false
